@@ -103,7 +103,7 @@ After creating the Lightning Page, you must configure it in your contact center 
    - Optionally, check "Always Show Voice Extension" if you want the extension to appear before, during, and after calls
    - Click "Save"
 
-   ![Contact Center Configuration Example](![image](Partner telephony config.png))
+   ![Contact Center Configuration Example](Partner%20telephony%20config.png)
 
 ## What You'll Learn From This Project
 
