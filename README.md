@@ -2,9 +2,9 @@
 
 ## Overview
 
-This Genesys Voice Extension is a **demonstration project** that showcases how to create, deploy, and configure a Lightning Web Component (LWC) as a Voice Extension in Salesforce Service Cloud. 
+This Genesys Voice Extension is a **demonstration project** that showcases how to create, deploy, and configure a Lightning Web Component (LWC) as a Voice Extension in CX Cloud (the integration between Genesys Cloud and Salesforce that leverages Service Cloud Voice). 
 
-> **Important Note**: This extension implements mute/unmute functionality which is already available in the native Salesforce call controls. The primary value of this project is as a reference implementation showing how to develop a working Voice Extension, not to add new functionality.
+> **Important Note**: This extension implements mute/unmute functionality which is already available in the native Salesforce Cloud Voice call controls. The primary value of this project is as a reference implementation showing how to develop a working Voice Extension, not to add new functionality.
 
 Use this as a starting point for developing your own custom Voice Extensions with unique functionality beyond what's available in the standard interface.
 
@@ -73,7 +73,7 @@ To use any Voice Extension (including this demo extension), you must create a sp
    - Enter a Label (e.g., "Genesys Voice Extension Demo")
    - Enter a Developer Name (e.g., "Genesys_Voice_Extension_Demo")
    - **Critical Step**: For "Page Type", select "Voice Extension"
-   - Choose any layout template (single column works well for this component)
+   - Choose any layout template
    - Click "Next"
 
 4. **Add the Component**:
