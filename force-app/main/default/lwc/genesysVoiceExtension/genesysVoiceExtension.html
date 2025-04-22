@@ -1,0 +1,20 @@
+<template>
+    <lightning-service-cloud-voice-toolkit-api></lightning-service-cloud-voice-toolkit-api>
+    
+    <div class="slds-p-around_small">
+        <lightning-button 
+            label={muteButtonLabel}
+            icon-name={muteIconName}
+            variant={muteButtonVariant}
+            onclick={handleToggleMute}
+            class="mute-btn"
+            disabled={isMuteDisabled}>
+        </lightning-button>
+        
+        <div if:true={debugMode} class="debug-panel">
+            <p>Call Status: {callStatus}</p>
+            <p>Mute State: {muteStateText}</p>
+            <p>Button Disabled: {buttonDisabledText}</p>
+        </div>
+    </div>
+</template>
