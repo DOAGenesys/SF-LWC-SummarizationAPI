@@ -67,7 +67,38 @@ The solution consists of a Lightning Web Component and an Apex controller:
     * Create or ensure a Named Credential named `GC_Base_API` exists.
     * Configure it with the appropriate Genesys Cloud API base URL (e.g., `https://api.mypurecloud.com` or region-specific URL) and authentication details (e.g., OAuth 2.0).
 3.  **Custom Fields on `genesysps__Experience__c`**:
-    * Ensure the `genesysps__Experience__c` object (or your equivalent custom object) has the fields referenced in the LWC and Apex class. These include fields for copilot summaries, confidences, wrap-up codes, interaction ID, participant ID, and communication ID.
+    * Ensure the `genesysps__Experience__c` object has the fields referenced in the LWC and Apex class. These include:
+  
+   Of course, here is the revised paragraph for your `README.md` file.
+
+***
+
+### **Custom Fields on genesysps__Experience__c**
+
+Ensure the **genesysps__Experience__c** object has the fields referenced in the LWC and Apex class. These include fields for copilot summaries, confidences, wrap-up codes, interaction ID, participant ID, communication ID... see complete list below:
+
+* **GC_Copilot_wrap_up_1_name__c**: Name of the primary wrap-up code.
+* **GC_Copilot_wrap_up_1_confidence__c**: Confidence score for the primary wrap-up code.
+* **GC_Copilot_wrap_up_1_id__c**: ID of the primary wrap-up code.
+* **GC_Copilot_wrap_up_2_name__c**: Name of the secondary wrap-up code.
+* **GC_Copilot_wrap_up_2_confidence__c**: Confidence score for the secondary wrap-up code.
+* **GC_Copilot_wrap_up_2_id__c**: ID of the secondary wrap-up code.
+* **GC_Copilot_wrap_up_3_name__c**: Name of the tertiary wrap-up code.
+* **GC_Copilot_wrap_up_3_confidence__c**: Confidence score for the tertiary wrap-up code.
+* **GC_Copilot_wrap_up_3_id__c**: ID of the tertiary wrap-up code.
+* **GC_Copilot_summary_text__c**: The interaction summary text.
+* **GC_Copilot_summary_confidence__c**: Confidence score for the summary.
+* **GC_Copilot_resolution_text__c**: The resolution text.
+* **GC_Copilot_resolution_confidence__c**: Confidence score for the resolution.
+* **GC_Copilot_reason_text__c**: The reason text.
+* **GC_Copilot_reason_confidence__c**: Confidence score for the reason.
+* **GC_Copilot_followup_text__c**: Follow-up actions text.
+* **GC_Copilot_followup_confidence__c**: Confidence score for the follow-up actions.
+* **genesysps__Interaction_Id__c**: The Genesys Cloud interaction ID.
+* **GC_agent_participant_id__c**: The agent's participant ID.
+* **GC_Copilot_communication_id__c**: The communication ID.
+
+  
 4.  **Permissions**:
     * Ensure users have permission to access the `ExperienceCopilotController` Apex class.
     * Ensure users have read access to the fields on the `genesysps__Experience__c` object.
