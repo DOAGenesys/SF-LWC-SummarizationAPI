@@ -77,26 +77,28 @@ The solution consists of a Lightning Web Component and an Apex controller:
 
 Ensure the **genesysps__Experience__c** object has the fields referenced in the LWC and Apex class. These include fields for copilot summaries, confidences, wrap-up codes, interaction ID, participant ID, communication ID... see complete list below:
 
-* **GC_Copilot_wrap_up_1_name__c**: Name of the primary wrap-up code.
-* **GC_Copilot_wrap_up_1_confidence__c**: Confidence score for the primary wrap-up code.
-* **GC_Copilot_wrap_up_1_id__c**: ID of the primary wrap-up code.
-* **GC_Copilot_wrap_up_2_name__c**: Name of the secondary wrap-up code.
-* **GC_Copilot_wrap_up_2_confidence__c**: Confidence score for the secondary wrap-up code.
-* **GC_Copilot_wrap_up_2_id__c**: ID of the secondary wrap-up code.
-* **GC_Copilot_wrap_up_3_name__c**: Name of the tertiary wrap-up code.
-* **GC_Copilot_wrap_up_3_confidence__c**: Confidence score for the tertiary wrap-up code.
-* **GC_Copilot_wrap_up_3_id__c**: ID of the tertiary wrap-up code.
-* **GC_Copilot_summary_text__c**: The interaction summary text.
-* **GC_Copilot_summary_confidence__c**: Confidence score for the summary.
-* **GC_Copilot_resolution_text__c**: The resolution text.
-* **GC_Copilot_resolution_confidence__c**: Confidence score for the resolution.
-* **GC_Copilot_reason_text__c**: The reason text.
-* **GC_Copilot_reason_confidence__c**: Confidence score for the reason.
-* **GC_Copilot_followup_text__c**: Follow-up actions text.
-* **GC_Copilot_followup_confidence__c**: Confidence score for the follow-up actions.
-* **genesysps__Interaction_Id__c**: The Genesys Cloud interaction ID.
-* **GC_agent_participant_id__c**: The agent's participant ID.
-* **GC_Copilot_communication_id__c**: The communication ID.
+| Label | API Name | Type |
+| :--- | :--- | :--- |
+| GC Copilot Wrap-up 1 Name | `GC_Copilot_wrap_up_1_name` | Text |
+| GC Copilot Wrap-up 1 Confidence | `GC_Copilot_wrap_up_1_confidence` | Number (0-1) |
+| GC Copilot Wrap-up 1 ID | `GC_Copilot_wrap_up_1_id` | Text |
+| GC Copilot Wrap-up 2 Name | `GC_Copilot_wrap_up_2_name` | Text |
+| GC Copilot Wrap-up 2 Confidence | `GC_Copilot_wrap_up_2_confidence` | Number (0-1) |
+| GC Copilot Wrap-up 2 ID | `GC_Copilot_wrap_up_2_id` | Text |
+| GC Copilot Wrap-up 3 Name | `GC_Copilot_wrap_up_3_name` | Text |
+| GC Copilot Wrap-up 3 Confidence | `GC_Copilot_wrap_up_3_confidence` | Number (0-1) |
+| GC Copilot Wrap-up 3 ID | `GC_Copilot_wrap_up_3_id` | Text |
+| GC Copilot Summary Text | `GC_Copilot_summary_text` | Long Text Area |
+| GC Copilot Summary Confidence | `GC_Copilot_summary_confidence` | Number (0-1) |
+| GC Copilot Resolution Text | `GC_Copilot_resolution_text` | Long Text Area |
+| GC Copilot Resolution Confidence | `GC_Copilot_resolution_confidence` | Number (0-1) |
+| GC Copilot Reason Text | `GC_Copilot_reason_text` | Long Text Area |
+| GC Copilot Reason Confidence | `GC_Copilot_reason_confidence` | Number (0-1) |
+| GC Copilot Follow-up Text | `GC_Copilot_followup_text` | Long Text Area |
+| GC Copilot Follow-up Confidence | `GC_Copilot_followup_confidence` | Number (0-1) |
+| Interaction ID | `genesysps__Interaction_Id` | Text |
+| GC Agent Participant ID | `GC_agent_participant_id` | Text |
+| GC Copilot Communication ID | `GC_Copilot_communication_id` | Text |
 
   
 4.  **Permissions**:
