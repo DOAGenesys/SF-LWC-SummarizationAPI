@@ -1,6 +1,6 @@
 # Genesys Cloud Copilot Summary & Wrap-up LWC for Salesforce
 
-**Disclaimer: This code is intended for research and demonstration purposes. It requires extensive testing and adaptation before being considered for use in a production environment. Ensure all security, error handling, and scalability aspects are thoroughly reviewed and addressed according to your organization's standards.**
+**Disclaimer: This code is intended for research and demonstration purposes. It requires testing before being considered for use in a production environment. Ensure all security, error handling, and scalability aspects are thoroughly reviewed and addressed according to your organization's standards.**
 
 ## Overview
 
