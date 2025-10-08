@@ -127,6 +127,50 @@ The following fields are created for both objects:
         - `VoiceCallCopilotController` (for `VoiceCall` object)
     * Ensure users have read access to the fields on both the `genesysps__Experience__c` and `VoiceCall` objects.
 
+## Deployment
+
+### Deploying via Salesforce CLI
+
+To deploy this solution to your Salesforce org using the Salesforce CLI, use the following command:
+
+```bash
+sf project deploy start -d force-app/main/default -o <username>
+```
+
+Replace `<username>` with your Salesforce username or alias.
+
+**Prerequisites for CLI Deployment:**
+- Install the Salesforce CLI
+- Authenticate with your target org using `sf org login web`
+- Ensure all components are properly structured in the `force-app/main/default` directory
+
+### Production Deployment Requirements
+
+**Important:** For production org deployment, you must create test classes for both Apex controllers:
+
+- **`ExperienceCopilotController`**: Requires test class with minimum 75% code coverage
+- **`VoiceCallCopilotController`**: Requires test class with minimum 75% code coverage
+
+**Test Class Requirements:**
+- Test the `updateWrapUpCode` method with various scenarios
+- Mock HTTP callouts using `HttpCalloutMock` (since these are `@future` methods)
+- Test error handling scenarios
+- Achieve at least 75% code coverage for production deployment
+
+**Example Test Structure:**
+```apex
+@isTest
+private class ExperienceCopilotControllerTest {
+    @isTest static void testUpdateWrapUpCode() {
+        // Test implementation here
+    }
+
+    @isTest static void testErrorHandling() {
+        // Test error scenarios
+    }
+}
+```
+
 ## How to Use
 
 ### For genesysps__Experience__c records:
