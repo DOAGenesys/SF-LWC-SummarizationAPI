@@ -93,7 +93,7 @@ The solution consists of Lightning Web Components and an Apex controller:
     * **For `genesysps__Experience__c` object**: Ensure the custom object has the fields referenced in the LWC and Apex class.
     * **For `VoiceCall` object**: Ensure the standard object has the custom fields referenced in the LWC and Apex class.
 
-The following fields are required for both objects:
+The following fields are created for both objects:
 
 | Label | API Name | Type | Applies To |
 | :--- | :--- | :--- | :--- |
