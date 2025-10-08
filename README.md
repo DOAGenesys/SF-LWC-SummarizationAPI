@@ -240,3 +240,10 @@ When viewing a record, the respective component will display the Copilot summary
 * **Apex**: Both `ExperienceCopilotController` and `VoiceCallCopilotController` use `try-catch` blocks to handle exceptions. Errors are logged using `System.debug` and re-thrown as `AuraHandledException` or custom `WrapUpException` to be caught by their respective LWCs.
 * **LWC**: Both `genesysExperienceSummary.js` and `genesysVoiceCallSummary.js` files include error handling for data loading (`wiredExperience`/`wiredVoiceCall`) and for the wrap-up update process (`handleWrapUpClick`). Errors are displayed to the user via `ShowToastEvent`.
 * **Debugging**: Console logs (`System.debug` in Apex, `console.log` and `console.error` in JS) are present throughout the code to aid in debugging. The `DEBUG_HEADER` constants help identify the source of log messages.
+
+## Participant data mapping for Voice calls
+
+* Make sure that Conversation.ConversationId is mapped to GC Interaction ID field we have created through this deployment:
+
+<img width="1777" height="847" alt="image" src="https://github.com/user-attachments/assets/0a4d422d-1d55-46fc-ae62-e35f83f63896" />
+
