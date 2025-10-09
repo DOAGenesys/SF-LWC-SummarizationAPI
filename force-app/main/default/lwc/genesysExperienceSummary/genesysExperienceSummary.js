@@ -1,5 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, updateRecord } from 'lightning/uiRecordApi';
+import { refreshApex } from '@salesforce/apex';
+import { subscribe, unsubscribe, onError } from 'lightning/empApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import updateWrapUpCode from '@salesforce/apex/ExperienceCopilotController.updateWrapUpCode';
 
@@ -33,6 +35,35 @@ export default class ExperienceCopilotSummary extends LightningElement {
     @api recordId;
     isProcessing = false;
 
+    // Auto-save properties
+    summaryAutoSaveTimer = null;
+    editedSummary = '';
+    isEditingSummary = false;
+
+    // CDC subscription
+    subscription = null;
+    channelName = '/data/genesysps__Experience__ChangeEvent';
+    relevantFields = new Set([
+        'GC_Copilot_session_summary_id__c',
+        'GC_Copilot_summary_text__c',
+        'GC_Copilot_summary_confidence__c',
+        'GC_Copilot_resolution_text__c',
+        'GC_Copilot_resolution_confidence__c',
+        'GC_Copilot_reason_text__c',
+        'GC_Copilot_reason_confidence__c',
+        'GC_Copilot_followup_text__c',
+        'GC_Copilot_followup_confidence__c',
+        'GC_Copilot_wrap_up_1_name__c',
+        'GC_Copilot_wrap_up_1_confidence__c',
+        'GC_Copilot_wrap_up_1_id__c',
+        'GC_Copilot_wrap_up_2_name__c',
+        'GC_Copilot_wrap_up_2_confidence__c',
+        'GC_Copilot_wrap_up_2_id__c',
+        'GC_Copilot_wrap_up_3_name__c',
+        'GC_Copilot_wrap_up_3_confidence__c',
+        'GC_Copilot_wrap_up_3_id__c'
+    ]);
+
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     experience;
 
@@ -42,6 +73,76 @@ export default class ExperienceCopilotSummary extends LightningElement {
 
     connectedCallback() {
         console.log(`${DEBUG_HEADER} - Component initialized with recordId: ${this.recordId}`);
+        // Initialize scrollbar visibility after component renders
+        setTimeout(() => this.updateScrollbarVisibility(), 100);
+        this.subscribeToCdc();
+        onError(error => {
+            console.error(`${DEBUG_HEADER} - empApi error`, JSON.stringify(error));
+        });
+    }
+
+    renderedCallback() {
+        // Update scrollbar visibility when component re-renders
+        this.updateScrollbarVisibility();
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeFromCdc();
+    }
+
+    subscribeToCdc() {
+        if (this.subscription) {
+            return;
+        }
+        subscribe(this.channelName, -1, message => this.handleCdcMessage(message))
+            .then(response => {
+                this.subscription = response;
+                console.log(`${DEBUG_HEADER} - Subscribed to ${this.channelName}`);
+            })
+            .catch(err => console.error(`${DEBUG_HEADER} - Subscribe failed`, err));
+    }
+
+    unsubscribeFromCdc() {
+        if (!this.subscription) {
+            return;
+        }
+        unsubscribe(this.subscription, () => {
+            console.log(`${DEBUG_HEADER} - Unsubscribed from ${this.channelName}`);
+            this.subscription = null;
+        });
+    }
+
+    handleCdcMessage(message) {
+        try {
+            const payload = message?.data?.payload;
+            const header = payload?.ChangeEventHeader || message?.data?.changeEventHeader;
+            if (!header) {
+                return;
+            }
+            const recordIds = header.recordIds || [];
+            if (!recordIds.includes(this.recordId)) {
+                return;
+            }
+            const changedFields = header.changedFields || payload?.changedFields || [];
+            const relevant = changedFields.length === 0 || changedFields.some(f => this.relevantFields.has(f));
+            if (relevant) {
+                console.log(`${DEBUG_HEADER} - Relevant CDC event received. Refreshing record.`);
+                refreshApex(this.experience);
+                setTimeout(() => this.updateScrollbarVisibility(), 200);
+            }
+        } catch (e) {
+            console.error(`${DEBUG_HEADER} - Error handling CDC message`, e);
+        }
+    }
+
+    updateScrollbarVisibility() {
+        const threshold = 12; // px tolerance to avoid false positives due to rounding
+        const textareas = this.template.querySelectorAll('.custom-textarea, .summary-textarea');
+        textareas.forEach(textarea => {
+            const needsScroll = (textarea.scrollHeight - textarea.clientHeight) > threshold;
+            textarea.style.overflowY = needsScroll ? 'auto' : 'hidden';
+            textarea.style.overflowX = 'hidden';
+        });
     }
 
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
@@ -81,6 +182,9 @@ export default class ExperienceCopilotSummary extends LightningElement {
     }
 
     get summary() {
+        if (this.isEditingSummary) {
+            return this.editedSummary;
+        }
         return getFieldValue(this.experience.data, 'genesysps__Experience__c.GC_Copilot_summary_text__c') || '';
     }
 
@@ -98,7 +202,12 @@ export default class ExperienceCopilotSummary extends LightningElement {
 
     getConfidenceColor(confidence) {
         console.log(`${DEBUG_HEADER} - Calculating confidence color for value: ${confidence}`);
-        if (!confidence) return '#e5e5e5';
+
+        // Use darkest green for confidence=1 or when confidence is not set
+        if (!confidence || confidence === 1) {
+            console.log(`${DEBUG_HEADER} - Using darkest green for confidence: ${confidence}`);
+            return 'rgb(0, 200, 0)';
+        }
 
         const confidenceValue = confidence * 100;
 
@@ -217,6 +326,73 @@ export default class ExperienceCopilotSummary extends LightningElement {
 						console.log(`${DEBUG_HEADER} - Update process completed`);
 				}
 		}
+
+    handleSummaryInput(event) {
+        this.isEditingSummary = true;
+        this.editedSummary = event.target.value;
+
+        // Clear existing timer
+        if (this.summaryAutoSaveTimer) {
+            clearTimeout(this.summaryAutoSaveTimer);
+        }
+
+        // Set new timer for auto-save after 2 seconds of inactivity
+        this.summaryAutoSaveTimer = setTimeout(() => {
+            this.saveSummary();
+        }, 2000);
+    }
+
+    handleSummaryBlur(event) {
+        // Save immediately when user leaves the field
+        if (this.isEditingSummary) {
+            this.saveSummary();
+        }
+    }
+
+    async saveSummary() {
+        if (!this.isEditingSummary || !this.recordId) {
+            return;
+        }
+
+        console.log(`${DEBUG_HEADER} - Auto-saving summary: ${this.editedSummary}`);
+
+        try {
+            const fields = {};
+            fields['Id'] = this.recordId;
+            fields['GC_Copilot_summary_text__c'] = this.editedSummary;
+
+            const recordInput = {
+                fields: fields
+            };
+
+            // Update the record
+            await updateRecord(recordInput);
+
+            // Reset editing state
+            this.isEditingSummary = false;
+            this.editedSummary = '';
+
+            // Clear timer
+            if (this.summaryAutoSaveTimer) {
+                clearTimeout(this.summaryAutoSaveTimer);
+                this.summaryAutoSaveTimer = null;
+            }
+
+            this.showToast('Success', 'Summary update sent', 'success');
+
+        } catch (error) {
+            console.error(`${DEBUG_HEADER} - Error saving summary:`, error);
+            this.showToast('Error', 'Failed to save summary', 'error');
+
+            // Reset editing state on error
+            this.isEditingSummary = false;
+            this.editedSummary = '';
+            if (this.summaryAutoSaveTimer) {
+                clearTimeout(this.summaryAutoSaveTimer);
+                this.summaryAutoSaveTimer = null;
+            }
+        }
+    }
 
     showToast(title, message, variant) {
         console.log(`${DEBUG_HEADER} - Showing toast - Title: ${title}, Message: ${message}, Variant: ${variant}`);
