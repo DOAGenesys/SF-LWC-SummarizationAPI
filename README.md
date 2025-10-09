@@ -67,7 +67,7 @@ The solution consists of Lightning Web Components, Apex controllers, automation 
     * **`GCGetAgentParticipantId`**: Fetches agent participant ID from Genesys Cloud Analytics API
         - **`getAgentParticipantId` method**: An `@InvocableMethod` that triggers the async data fetch
         - **`futureCallout` method**: Performs the HTTP GET request to `/api/v2/analytics/conversations/{id}/details`
-        - **`extractAgentParticipantId` method**: Parses the response to find the agent participant ID
+        - **`extractAgentParticipantId` method**: Parses the response to find the agent participant IDCDC
         - **`updateRecords` method**: Updates the relevant record(s) with the fetched agent participant ID
     * **`GCFetchInteractionSummary`**: Fetches Copilot summaries and wrap-up codes from Genesys Cloud with intelligent timing and validation
         - **`updateInteractionSummary` method**: An `@InvocableMethod` that triggers the async data fetch
@@ -241,6 +241,9 @@ After successfully deploying the components via Salesforce CLI, administrators m
 4. Click **Save**
 
 **Why CDC is needed:** The LWCs subscribe to CDC events to automatically refresh when Copilot data is populated by the async triggers. Without CDC enabled, users must manually refresh the page to see updated data.
+
+<img width="2504" height="861" alt="image" src="https://github.com/user-attachments/assets/669b3289-7323-40d4-8792-f7f068494c82" />
+
 
 ### 2. Add LWCs to Record Pages
 
