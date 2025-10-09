@@ -225,22 +225,6 @@ private class ExperienceCopilotControllerTest {
     }
 }
 ```
-
-## How to Use
-
-After completing the **Post-Deployment Configuration** steps below, the LWCs will automatically display Copilot data when records are created or updated with valid Genesys Cloud interaction IDs.
-
-### User Experience
-
-When viewing a record with populated Copilot data, users can:
-
-- **View Copilot summaries and wrap-up codes** automatically populated by the async triggers
-- **Edit the summary text** directly in the component (auto-saves after 2 seconds of inactivity, shows "Summary update sent" toast)
-- **Click wrap-up codes** to apply them to the corresponding Genesys Cloud interaction
-- **See real-time updates** via Change Data Capture (no manual refresh needed if CDC is enabled)
-
-**Note:** Refer to the **Post-Deployment Configuration** section for setup instructions.
-
 ## Post-Deployment Configuration
 
 After successfully deploying the components via Salesforce CLI, administrators must complete the following configuration steps in the Salesforce org:
@@ -341,6 +325,21 @@ Ensure the following have proper access for the user profiles:
 4. Test VoiceCall records similarly if applicable
 
 **Important:** If CDC is not enabled or field permissions are missing, users will need to manually refresh the page to see updated Copilot data.
+
+## How to Use
+
+After completing the **Post-Deployment Configuration** steps above, the LWCs will automatically display Copilot data when records are created or updated with valid Genesys Cloud interaction IDs.
+
+### User Experience
+
+When viewing a record with populated Copilot data, users can:
+
+- **View Copilot summaries and wrap-up codes** automatically populated by the async triggers
+- **Edit the summary text** directly in the component (auto-saves after 2 seconds of inactivity, shows "Summary update sent" toast)
+- **Click wrap-up codes** to apply them to the corresponding Genesys Cloud interaction
+- **See real-time updates** via Change Data Capture (no manual refresh needed if CDC is enabled)
+
+**Note:** Refer to the **Post-Deployment Configuration** section for setup instructions.
 
 ## Key Files
 
