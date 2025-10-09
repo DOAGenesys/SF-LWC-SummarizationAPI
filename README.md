@@ -301,7 +301,7 @@ For `genesysps__Experience__c` records:
 
    <img width="3212" height="1100" alt="image" src="https://github.com/user-attachments/assets/d8cb020c-d95f-4497-955c-ef2d97c0b7d1" />
 
-Check Read & Write for all these:
+Check Read for all these:
 
 <img width="2946" height="1134" alt="image" src="https://github.com/user-attachments/assets/be6f390f-e8ee-4c45-886d-2b7955e140a8" />
 
