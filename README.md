@@ -110,7 +110,11 @@ The solution consists of Lightning Web Components, Apex controllers, automation 
     4.  The Apex method constructs the JSON payload and the API endpoint.
     5.  The `futureCallout` Apex method then makes an HTTP POST request to `callout:GC_Base_API/api/v2/conversations/calls/{interactionId}/participants/{participantId}/communications/{communicationId}/wrapup`.
 
-* **Named Credential**: The Apex callouts use a Named Credential `GC_Base_API`. This must be configured in Salesforce with the base URL for the Genesys Cloud API.
+* **Named Credential**: The Apex callouts use a Named Credential + External Credential, named `GC_Base_API`. This must be configured in Salesforce with the base URL for the Genesys Cloud API.
+
+  <img width="2146" height="1148" alt="image" src="https://github.com/user-attachments/assets/1ac6dc59-3df5-45e2-8f84-4e692ae65716" />
+  <img width="3132" height="1150" alt="image" src="https://github.com/user-attachments/assets/cdb675cd-c1b7-43e5-a0ae-b61aa9c7c3f4" />
+
 
 * **Error Handling**: All components include comprehensive error handling. The LWCs display toast notifications for errors, and the Apex classes log errors and throw appropriate exceptions.
 
@@ -311,7 +315,14 @@ For `genesysps__Experience__c` records:
    | `genesysps__Interaction_Id__c` | Interaction ID | ✅ Read |
    | `genesysps__Ended__c` | Ended | ✅ Read |
 
-5. **Save** the profile changes
+   <img width="3212" height="1100" alt="image" src="https://github.com/user-attachments/assets/d8cb020c-d95f-4497-955c-ef2d97c0b7d1" />
+
+Check Read & Write for all these:
+
+<img width="2946" height="1134" alt="image" src="https://github.com/user-attachments/assets/be6f390f-e8ee-4c45-886d-2b7955e140a8" />
+
+
+6. **Save** the profile changes
 
 **Note:** If using Permission Sets instead of Profiles, apply the same field access to the relevant Permission Sets.
 
