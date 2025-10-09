@@ -95,14 +95,17 @@
 
 .custom-textarea {
     resize: none;
-    min-height: 3rem;
+    min-height: 2.25rem; /* one-line height */
+    max-height: 2.25rem; /* lock to one line */
     background: white;
     border-radius: 0.25rem;
     font-size: 0.8125rem;
-    padding: 0.75rem;
+    line-height: 1.25rem; /* ensure first line fully visible */
+    padding: 0.5rem 0.75rem;
     box-shadow: var(--input-shadow);
     transition: all 0.2s ease;
     width: 100%;
+    overflow: hidden; /* Hidden by default; JS toggles when overflow truly occurs */
 }
 
 .custom-textarea:hover {
@@ -110,9 +113,9 @@
 }
 
 .summary-textarea {
-    min-height: 10rem;
-    max-height: 10rem;
-    overflow-y: auto;
+    min-height: 8rem;
+    max-height: 8rem;
+    overflow: hidden; /* Initially hidden, JS will show when needed */
 }
 
 .wrap-up-grid {
@@ -152,7 +155,9 @@
 .wrap-up-textarea {
     flex: 1;
     height: auto !important;
-    min-height: 80px !important;
+    min-height: 2.25rem !important; /* one-liner */
+    max-height: 2.25rem !important;
+    overflow: hidden; /* Hidden by default; JS toggles when overflow truly occurs */
 }
 
 .wrap-up-box:hover::after {
@@ -234,7 +239,8 @@
 
 @media (max-width: 768px) {
     .wrap-up-textarea {
-        min-height: 60px !important;
+        min-height: 2rem !important;
+        max-height: 2rem !important;
     }
 
     .wrap-up-box:hover::after {
