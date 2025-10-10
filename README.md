@@ -229,23 +229,7 @@ private class ExperienceCopilotControllerTest {
 
 After successfully deploying the components via Salesforce CLI, administrators must complete the following configuration steps in the Salesforce org:
 
-### 1. Enable Change Data Capture (CDC)
-
-**Required for automatic UI refresh functionality.**
-
-1. Go to **Setup** → **Change Data Capture**
-2. Click **Add Objects**
-3. Select the following objects and enable them:
-   - `genesysps__Experience__c` (Custom Object)
-   - `VoiceCall` (Standard Object)
-4. Click **Save**
-
-**Why CDC is needed:** The LWCs subscribe to CDC events to automatically refresh when Copilot data is populated by the async triggers. Without CDC enabled, users must manually refresh the page to see updated data.
-
-<img width="2504" height="861" alt="image" src="https://github.com/user-attachments/assets/669b3289-7323-40d4-8792-f7f068494c82" />
-
-
-### 2. Add LWCs to Record Pages
+### 1. Add LWCs to Record Pages
 
 **Required for users to access the Copilot summaries.**
 
@@ -263,7 +247,7 @@ After successfully deploying the components via Salesforce CLI, administrators m
 4. Configure the component (it automatically uses the record ID)
 5. **Save** and **Activate** the page
 
-### 3. Configure Field-Level Security (FLS) - Experience Object Only
+### 2. Configure Field-Level Security (FLS) - Experience Object Only
 
 **Required for users to access Copilot fields on Experience records.**
 
@@ -309,11 +293,11 @@ Check Read for all these:
 <img width="2946" height="1134" alt="image" src="https://github.com/user-attachments/assets/be6f390f-e8ee-4c45-886d-2b7955e140a8" />
 
 
-6. **Save** the profile changes
+5. **Save** the profile changes
 
 **Note:** If using Permission Sets instead of Profiles, apply the same field access to the relevant Permission Sets.
 
-### 4. Verify Apex Class and Trigger Access
+### 3. Verify Apex Class and Trigger Access
 
 Ensure the following have proper access for the user profiles:
 
@@ -323,11 +307,9 @@ Ensure the following have proper access for the user profiles:
 ### 5. Test the Integration
 
 1. Create a test `genesysps__Experience__c` record with a valid `genesysps__Interaction_Id__c`
-2. Wait for the trigger to populate Copilot data (may take a few minutes)
+2. Wait for the trigger to populate Copilot data (may take a few seconds)
 3. Verify the Experience LWC shows the Copilot summary and wrap-up codes
 4. Test VoiceCall records similarly if applicable
-
-**Important:** If CDC is not enabled or field permissions are missing, users will need to manually refresh the page to see updated Copilot data.
 
 ## How to Use
 
@@ -340,7 +322,6 @@ When viewing a record with populated Copilot data, users can:
 - **View Copilot summaries and wrap-up codes** automatically populated by the async triggers
 - **Edit the summary text** directly in the component (auto-saves after 2 seconds of inactivity, shows "Summary update sent" toast)
 - **Click wrap-up codes** to apply them to the corresponding Genesys Cloud interaction
-- **See real-time updates** via Change Data Capture (no manual refresh needed if CDC is enabled)
 
 **Note:** Refer to the **Post-Deployment Configuration** section for setup instructions.
 
