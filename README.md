@@ -306,10 +306,11 @@ Ensure the following have proper access for the user profiles:
 
 ### 5. Test the Integration
 
-1. Create a test `genesysps__Experience__c` record with a valid `genesysps__Interaction_Id__c`
-2. Wait for the trigger to populate Copilot data (may take a few seconds)
-3. Verify the Experience LWC shows the Copilot summary and wrap-up codes
-4. Test VoiceCall records similarly if applicable
+1. Create a test `genesysps__Experience__c` record by starting a web messaging conversation.
+2. Do a meaningful conversation (enough to generate a summary)
+3. End the experience conversation, and wait for the trigger to populate Copilot data (may take a few seconds)
+4. Verify the Experience LWC shows the Copilot summary and wrap-up codes. Verify you can edit the summary, and also to click in the proper wrap-up code to effectively wrap the conversation up.
+5. Test a Voice call similarly.
 
 ## How to Use
 
