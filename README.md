@@ -12,6 +12,9 @@ This repository contains two similar components:
 
 Both components are designed to be placed on Salesforce record pages for their respective objects.
 
+<img width="2822" height="1196" alt="image" src="https://github.com/user-attachments/assets/e286597b-c11f-4a83-a8b0-331ba73d8cf2" />
+
+
 ## Features
 
 * **Interaction Details Display**: Shows key information from Genesys Cloud Copilot:
