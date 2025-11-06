@@ -1,6 +1,6 @@
 # Genesys Cloud Copilot Summary & Wrap-up LWC for Salesforce
 
-**Disclaimer: This code is intended for research and demonstration purposes. It requires testing before being considered for use in a production environment. Ensure all security, error handling, and scalability aspects are thoroughly reviewed and addressed according to your organization's standards. In case production deployment is planned, test apex classes must be developed.**
+**Disclaimer: This code is intended for research and demonstration purposes. It requires testing before being considered for use in a production environment. Ensure all security, error handling, and scalability aspects are thoroughly reviewed and addressed according to your organization's standards.**
 
 ## Overview
 
@@ -11,9 +11,6 @@ This repository contains two similar components:
 2. **`genesysVoiceCallSummary`** - Designed for the standard `VoiceCall` object
 
 Both components are designed to be placed on Salesforce record pages for their respective objects.
-
-<img width="2822" height="1196" alt="image" src="https://github.com/user-attachments/assets/e286597b-c11f-4a83-a8b0-331ba73d8cf2" />
-
 
 ## Features
 
@@ -70,14 +67,14 @@ The solution consists of Lightning Web Components, Apex controllers, automation 
     * **`GCGetAgentParticipantId`**: Fetches agent participant ID from Genesys Cloud Analytics API
         - **`getAgentParticipantId` method**: An `@InvocableMethod` that triggers the async data fetch
         - **`futureCallout` method**: Performs the HTTP GET request to `/api/v2/analytics/conversations/{id}/details`
-        - **`extractAgentParticipantId` method**: Parses the response to find the agent participant IDCDC
+        - **`extractAgentParticipantId` method**: Parses the response to find the agent participant ID
         - **`updateRecords` method**: Updates the relevant record(s) with the fetched agent participant ID
     * **`GCFetchInteractionSummary`**: Fetches Copilot summaries and wrap-up codes from Genesys Cloud with intelligent timing and validation
         - **`updateInteractionSummary` method**: An `@InvocableMethod` that triggers the async data fetch
         - **`futureCallout` method**: Performs the HTTP GET request to `/api/v2/conversations/{id}/summaries` with retry logic and timing delays
         - **`processResponse` method**: Parses and maps the response data to Salesforce fields, ensuring only complete session summaries with participants are accepted
         - **`updateRecord` method**: Updates the relevant record(s) with the fetched Copilot data
-        - **Intelligent Retry Logic**: Implements configurable delays (1-second for Experience records, 2-seconds for VoiceCall records), handles 404 "No summaries found" errors with automatic retries, and validates session summaries have participants before accepting
+        - **Intelligent Retry Logic**: Uses configurable 2-second delays (default for both Experience and VoiceCall records), handles 404 "No summaries found" errors with automatic retries, and validates session summaries have participants before accepting
 
 5.  **Automation Triggers**:
     * **`ExperienceTrigger`**: Triggers data fetching for `genesysps__Experience__c` records
@@ -96,8 +93,8 @@ The solution consists of Lightning Web Components, Apex controllers, automation 
     - **GCFetchInteractionSummary**: Makes async callout to `/api/v2/conversations/{id}/summaries` to fetch Copilot data and map to Salesforce fields with intelligent retry logic and timing
 
 * **Intelligent Retry & Timing Logic**: The `GCFetchInteractionSummary` class implements sophisticated retry logic to ensure complete data retrieval:
-    - **Initial Delay**: 1-second wait before the first API call to allow Genesys Cloud time to fully populate session summaries (2 seconds for VoiceCall records)
-    - **Inter-Retry Delay**: 1-second wait between retry attempts (up to 3 total attempts) - 2 seconds for VoiceCall records
+    - **Initial Delay**: 2-second wait before the first API call to allow Genesys Cloud time to fully populate session summaries (2 seconds for VoiceCall records)
+    - **Inter-Retry Delay**: 2-second wait between retry attempts (up to 10 total attempts for both Experience and VoiceCall records)
     - **404 Error Handling**: Automatically retries when receiving "No summaries found in DB for this hashkey" errors
     - **Participants Validation**: Only accepts session summaries that include a non-empty `participants` array, ensuring we get the complete, latest interaction data
     - **Last Non-Empty Selection**: Always selects the last (most recent) non-empty session summary with participants, not the first one
@@ -113,11 +110,7 @@ The solution consists of Lightning Web Components, Apex controllers, automation 
     4.  The Apex method constructs the JSON payload and the API endpoint.
     5.  The `futureCallout` Apex method then makes an HTTP POST request to `callout:GC_Base_API/api/v2/conversations/calls/{interactionId}/participants/{participantId}/communications/{communicationId}/wrapup`.
 
-* **Named Credential**: The Apex callouts use a Named Credential + External Credential, named `GC_Base_API`. This must be configured in Salesforce with the base URL for the Genesys Cloud API.
-
-  <img width="2146" height="1148" alt="image" src="https://github.com/user-attachments/assets/1ac6dc59-3df5-45e2-8f84-4e692ae65716" />
-  <img width="3132" height="1150" alt="image" src="https://github.com/user-attachments/assets/cdb675cd-c1b7-43e5-a0ae-b61aa9c7c3f4" />
-
+* **Named Credential**: The Apex callouts use a Named Credential `GC_Base_API`. This must be configured in Salesforce with the base URL for the Genesys Cloud API.
 
 * **Error Handling**: All components include comprehensive error handling. The LWCs display toast notifications for errors, and the Apex classes log errors and throw appropriate exceptions.
 
@@ -201,12 +194,14 @@ Replace `<username>` with your Salesforce username or alias.
 
 ### Production Deployment Requirements
 
-**Important:** For production org deployment, you must create test classes for all Apex classes:
+**Important:** At present this repo only includes Apex tests for `ExperienceCopilotController` and `VoiceCallCopilotController`. If you plan to deploy to a production org, you must also build tests for `GCGetAgentParticipantId` and `GCFetchInteractionSummary` so every class that performs callouts has coverage.
 
-- **`ExperienceCopilotController`**: Requires test class with minimum 75% code coverage
-- **`VoiceCallCopilotController`**: Requires test class with minimum 75% code coverage
-- **`GCGetAgentParticipantId`**: Requires test class with minimum 75% code coverage
-- **`GCFetchInteractionSummary`**: Requires test class with minimum 75% code coverage
+For production org deployment, you must create test classes for all Apex classes:
+
+- **`ExperienceCopilotControllerTest`**: Already present in this repo
+- **`VoiceCallCopilotControllerTest`**: Already present in this repo
+- **`GCGetAgentParticipantIdTest`**: To be built
+- **`GCFetchInteractionSummaryTest`**: To be built
 
 **Test Class Requirements:**
 - Test the `@AuraEnabled` and `@InvocableMethod` methods with various scenarios
@@ -228,11 +223,40 @@ private class ExperienceCopilotControllerTest {
     }
 }
 ```
+
+## How to Use
+
+After completing the **Post-Deployment Configuration** steps below, the LWCs will automatically display Copilot data when records are created or updated with valid Genesys Cloud interaction IDs.
+
+### User Experience
+
+When viewing a record with populated Copilot data, users can:
+
+- **View Copilot summaries and wrap-up codes** automatically populated by the async triggers
+- **Edit the summary text** directly in the component (auto-saves after 2 seconds of inactivity, shows "Summary update sent" toast)
+- **Click wrap-up codes** to apply them to the corresponding Genesys Cloud interaction
+- **See real-time updates** via Change Data Capture (no manual refresh needed if CDC is enabled)
+
+**Note:** Refer to the **Post-Deployment Configuration** section for setup instructions.
+
 ## Post-Deployment Configuration
 
 After successfully deploying the components via Salesforce CLI, administrators must complete the following configuration steps in the Salesforce org:
 
-### 1. Add LWCs to Record Pages
+### 1. Enable Change Data Capture (CDC)
+
+**Required for automatic UI refresh functionality.**
+
+1. Go to **Setup** → **Change Data Capture**
+2. Click **Add Objects**
+3. Select the following objects and enable them:
+   - `genesysps__Experience__c` (Custom Object)
+   - `VoiceCall` (Standard Object)
+4. Click **Save**
+
+**Why CDC is needed:** The LWCs subscribe to CDC events to automatically refresh when Copilot data is populated by the async triggers. Without CDC enabled, users must manually refresh the page to see updated data.
+
+### 2. Add LWCs to Record Pages
 
 **Required for users to access the Copilot summaries.**
 
@@ -250,7 +274,7 @@ After successfully deploying the components via Salesforce CLI, administrators m
 4. Configure the component (it automatically uses the record ID)
 5. **Save** and **Activate** the page
 
-### 2. Configure Field-Level Security (FLS) - Experience Object Only
+### 3. Configure Field-Level Security (FLS) - Experience Object Only
 
 **Required for users to access Copilot fields on Experience records.**
 
@@ -289,18 +313,11 @@ For `genesysps__Experience__c` records:
    | `genesysps__Interaction_Id__c` | Interaction ID | ✅ Read |
    | `genesysps__Ended__c` | Ended | ✅ Read |
 
-   <img width="3212" height="1100" alt="image" src="https://github.com/user-attachments/assets/d8cb020c-d95f-4497-955c-ef2d97c0b7d1" />
-
-Check Read for all these:
-
-<img width="2946" height="1134" alt="image" src="https://github.com/user-attachments/assets/be6f390f-e8ee-4c45-886d-2b7955e140a8" />
-
-
 5. **Save** the profile changes
 
 **Note:** If using Permission Sets instead of Profiles, apply the same field access to the relevant Permission Sets.
 
-### 3. Verify Apex Class and Trigger Access
+### 4. Verify Apex Class and Trigger Access
 
 Ensure the following have proper access for the user profiles:
 
@@ -309,25 +326,12 @@ Ensure the following have proper access for the user profiles:
 
 ### 5. Test the Integration
 
-1. Create a test `genesysps__Experience__c` record by starting a web messaging conversation.
-2. Do a meaningful conversation (enough to generate a summary)
-3. End the experience conversation, and wait for the trigger to populate Copilot data (may take a few seconds)
-4. Verify the Experience LWC shows the Copilot summary and wrap-up codes. Verify you can edit the summary, and also to click in the proper wrap-up code to effectively wrap the conversation up.
-5. Test a Voice call similarly.
+1. Create a test `genesysps__Experience__c` record with a valid `genesysps__Interaction_Id__c`
+2. Wait for the trigger to populate Copilot data (may take a few minutes)
+3. Verify the Experience LWC shows the Copilot summary and wrap-up codes
+4. Test VoiceCall records similarly if applicable
 
-## How to Use
-
-After completing the **Post-Deployment Configuration** steps above, the LWCs will automatically display Copilot data when records are created or updated with valid Genesys Cloud interaction IDs.
-
-### User Experience
-
-When viewing a record with populated Copilot data, users can:
-
-- **View Copilot summaries and wrap-up codes** automatically populated by the async triggers
-- **Edit the summary text** directly in the component (auto-saves after 2 seconds of inactivity, shows "Summary update sent" toast)
-- **Click wrap-up codes** to apply them to the corresponding Genesys Cloud interaction
-
-**Note:** Refer to the **Post-Deployment Configuration** section for setup instructions.
+**Important:** If CDC is not enabled or field permissions are missing, users will need to manually refresh the page to see updated Copilot data.
 
 ## Key Files
 
