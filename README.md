@@ -33,6 +33,9 @@ Both components are designed to be placed on Salesforce record pages for their r
 * **Custom Styling**: Utilizes custom CSS for a modern and integrated look and feel within Salesforce Lightning Experience.
 * **Multi-Object Support**: Components available for both custom (`genesysps__Experience__c`) and standard (`VoiceCall`) objects.
 
+  <img width="2476" height="840" alt="image" src="https://github.com/user-attachments/assets/20b02cec-4824-4855-8640-7a5ea20f7b1a" />
+
+
 ## Technical Overview
 
 ### Architecture
